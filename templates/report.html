@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+   <body>
+    <form action = "http://192.168.1.100/report" method = "POST">
+        <br>
+        <table border = 5>
+            {% for row in mf_data%}
+               <tr>
+                  <th> {{ row[0] }} </th>
+                  <td> {{ row[1] }} </td>
+                  <td> {{ row[2] }} </td>
+                  <td> {{ row[3] }} </td>
+                  <td> {{ row[4] }} </td>
+                  <td> {{ row[5] }} </td>
+               </tr>
+            {% endfor %}
+        </table>
+     </table>
+   </body>
+</html>

@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+   <body>
+    <form action = "http://192.168.1.100/update" method = "POST">
+        <br>
+        <table border = 5>
+            {% for row in cursor%}
+               <tr>
+                  <th> {{ row[0] }} </th>
+                  <td> {{ row[1] }} </td>
+                  <td> {{ row[2] }} </td>
+                  <td> {{ row[3] }} </td>
+                  <td> <input type = "text" name = "nm"+{{ key }} /> </td>
+               </tr>
+            {% endfor %}
+        </table>
+        <input type = "submit" value = "submit" /></p>
+     </table>
+   </body>
+</html>
