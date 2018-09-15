@@ -28,10 +28,7 @@ pypiwin32==223
 python-dateutil==2.7.2
 pyttsx3==2.7
 pytz==2018.3
-pywin32==223
-selenium==3.11.0
 six==1.11.0
-SpeechRecognition==3.8.1
 typed-ast==1.1.0
 virtualenv==16.0.0
 Werkzeug==0.14.1
