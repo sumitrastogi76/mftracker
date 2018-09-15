@@ -98,5 +98,5 @@ def save_nav_in_db(NAV):
     conn.close()
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run('192.168.1.100',80)
+    app.debug = False
+    app.run()
