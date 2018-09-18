@@ -44,8 +44,8 @@ def home():
 @app.route('/update', methods = ['POST','GET'])
 def update():
     if request.method == 'POST':
-        #conn = connect_db('MF.db')
-        #update_value(conn,"COST",29900.07,"MTE117")
+        conn = connect_db('MF.db')
+        update_value(conn,"COST",29900.07,"MTE117")
         return "Database Update Feature is not available yet"
 
 @app.route('/showdb', methods = ['POST','GET'])
@@ -96,14 +96,15 @@ def read_nav_from_internet():
                  'MMA100' : r'https://www.moneycontrol.com/mutual-funds/nav/mirae-asset-emerging-bluechip-fund-direct-plan/MMA100'}
     
     for MF in MF_DICT:
-        myfile = None
+        tmp = ""
         try:
             response = urlopen(MF_DICT[MF])
-            myfile = str(response.read())
             time.sleep(4)
+            myfile = str(response.read())
+            tmp = (myfile.split('[')[1].split(']')[0].strip())
             MF_NAV.append(float(myfile.split('[')[1].split(']')[0].strip()))
         except:
-            print("Error during capturing NAV -->"+(myfile.split('[')[1].split(']')[0])+"<--")
+            print("Error during capturing NAV -->"+tmp+"<--")
     return MF_NAV
 
 if __name__ == '__main__':
