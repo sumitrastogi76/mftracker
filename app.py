@@ -99,8 +99,9 @@ def read_nav_from_internet():
         tmp = ""
         try:
             response = urlopen(MF_DICT[MF])
-            time.sleep(5)
+            time.sleep(3)
             myfile = str(response.read())
+            time.sleep(2)
             tmp = (myfile.split('[')[1].split(']')[0].strip())
             MF_NAV.append(float(myfile.split('[')[1].split(']')[0].strip()))
         except:
