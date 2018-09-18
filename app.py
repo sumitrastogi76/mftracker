@@ -95,15 +95,13 @@ def read_nav_from_internet():
                  'MMA100' : r'https://www.moneycontrol.com/mutual-funds/nav/mirae-asset-emerging-bluechip-fund-direct-plan/MMA100'}
     
     for MF in MF_DICT:
+        myfile = None
         try:
             response = urlopen(MF_DICT[MF])
             myfile = str(response.read())
-            MF_NAV.append(float(myfile.split('[')[1].split(']')[0]))
+            MF_NAV.append(float(myfile.split('[')[1].split(']')[0].strip()))
         except:
-            response = urlopen(MF_DICT[MF])
-            myfile = str(response.read())
-            MF_NAV.append(float(myfile.split('[')[1].split(']')[0]))
-            print("This is rerun")
+            print("Error during capturing NAV : "+(myfile.split('[')[1].split(']')[0])))
     return MF_NAV
 
 if __name__ == '__main__':
