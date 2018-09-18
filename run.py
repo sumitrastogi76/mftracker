@@ -1,8 +1,9 @@
 import sqlite3
 import datetime
-from flask import Flask, request, redirect, url_for, render_template
+from flask import Flask, request, redirect, url_for, render_template, abort, flash
 from six.moves.urllib.request import urlopen
 app = Flask(__name__)
+app.secret_key = 'random string'
 
 def connect_db(db_name):
     conn = sqlite3.connect(db_name)
@@ -20,13 +21,16 @@ def read_value(conn,table_name):
 
 @app.route('/login',methods = ['POST', 'GET'])
 def login():
+   error = None
    if request.method == 'POST':
-      pswd = request.form['nm']
-      if pswd == "qwe123R$":
-          #user = 'Sumit Rastogi'
+      username = request.form['username']
+      pswd = request.form['password']
+      error = 'Invalid username or password. Please try again!'
+      if pswd == "qwe123R$" and username == 'sumit7150':
+          flash('Welcome %s, You were successfully logged in'%username)
           return redirect(url_for('home'))
       else:
-          return "<h1>Access Denied!!</h1><br><br><h2>ERROR: YOU HAVE ENTERED INCORRECT PASSWORD</h2>"
+          return render_template('login.html',error = error)
 
 @app.route('/')
 def index():
@@ -68,7 +72,7 @@ def report():
         cost.append(mf_data[index][3])
     for i in range(len(name)):
         data.append([name[i],NAV[i+1],unit[i],cost[i],value[i],value[i]-cost[i]])
-    data.append(['','','',sum(cost),sum(value),sum(value)-sum(cost)])
+    data.append(['Profit/Loss',str((sum(value)-sum(cost))*100/sum(cost))+"%",'',sum(cost),sum(value),sum(value)-sum(cost)])
     return render_template('report.html',mf_data=data)
 
 def read_nav_from_internet():
@@ -98,5 +102,4 @@ def save_nav_in_db(NAV):
     conn.close()
 
 if __name__ == '__main__':
-    app.debug = False
-    app.run()
+    app.run(debug = False)

@@ -1,10 +1,25 @@
+<!doctype html>
 <html>
+   
+   <head>
+      <title>Welcome to sumit website</title>
+   </head>
    <body>
-      <form action = "/report" method = "POST">
-         <p>Click here to check report <input type = "submit" value = "submit" /></p>
-      </form>
-      <form action = "/showdb" method = "POST">
-        <p>Click here to update the purchase record <input type = "submit" value = "submit" /></p>
-     </form>
+      <p><a href = "{{ url_for('index') }}"><b>logout?</b></a>
+      {% with messages = get_flashed_messages() %}
+         {% if messages %}
+            <ul>
+               {% for message in messages %}
+               <li>{{ message }}</li>
+               {% endfor %}
+            </ul>
+         {% endif %}
+      {% endwith %}
+      </p>
+      <h1>Welcome to flask website</h1>
+      <p>To generate report, Please <a href = "{{ url_for('report') }}">
+         <b>click here</b></a></p>
+      <p>To update database <a href = "{{ url_for('show_db') }}">
+         <b>click here</b></a></p>
    </body>
 </html>
