@@ -56,6 +56,7 @@ def show_db():
 @app.route('/report', methods = ['POST','GET'])
 def report():
     NAV = read_nav_from_internet()
+    print(NAV)
     save_nav_in_db(NAV)
     conn = connect_db('MF.db')
     value = []
