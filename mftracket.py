@@ -2,8 +2,8 @@ import sqlite3
 import datetime
 from flask import Flask, request, redirect, url_for, render_template, abort, flash
 from six.moves.urllib.request import urlopen
-app = Flask(__name__)
-app.secret_key = 'random string'
+mftracker = Flask(__name__)
+mftracker.secret_key = 'random string'
 
 def connect_db(db_name):
     conn = sqlite3.connect(db_name)
@@ -19,7 +19,7 @@ def read_value(conn,table_name):
     cursor = conn.execute("SELECT * from %s"%table_name)
     return cursor
 
-@app.route('/login',methods = ['POST', 'GET'])
+@mftracker.route('/login',methods = ['POST', 'GET'])
 def login():
    error = None
    if request.method == 'POST':
@@ -32,28 +32,28 @@ def login():
       else:
           return render_template('login.html',error = error)
 
-@app.route('/')
+@mftracker.route('/')
 def index():
    return render_template('login.html')
 
-@app.route('/home')
+@mftracker.route('/home')
 def home():
    return render_template('home.html')
 
-@app.route('/update', methods = ['POST','GET'])
+@mftracker.route('/update', methods = ['POST','GET'])
 def update():
     if request.method == 'POST':
         conn = connect_db('MF.db')
         update_value(conn,"COST",22900.07,"MTE117")
         return "Database Updated"
 
-@app.route('/showdb', methods = ['POST','GET'])
+@mftracker.route('/showdb', methods = ['POST','GET'])
 def show_db():
     save_nav_in_db(read_nav_from_internet())
     conn = connect_db('MF.db')
     return render_template('update.html', cursor = read_value(conn,'MF_table'))
 
-@app.route('/report', methods = ['POST','GET'])
+@mftracker.route('/report', methods = ['POST','GET'])
 def report():
     NAV = read_nav_from_internet()
     save_nav_in_db(NAV)
@@ -102,4 +102,4 @@ def save_nav_in_db(NAV):
     conn.close()
 
 if __name__ == '__main__':
-    app.run(debug = False)
+    mftracker.run(debug = False)
