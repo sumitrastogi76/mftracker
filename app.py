@@ -45,7 +45,7 @@ def home():
 def update():
     if request.method == 'POST':
         conn = connect_db('MF.db')
-        update_value(conn,"COST",22900.07,"MTE117")
+        update_value(conn,"COST",29900.07,"MTE117")
         return "Database Updated"
 
 @app.route('/showdb', methods = ['POST','GET'])
