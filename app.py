@@ -100,7 +100,10 @@ def read_nav_from_internet():
             myfile = str(response.read())
             MF_NAV.append(float(myfile.split('[')[1].split(']')[0]))
         except:
-            print("Please Rerun.. Values are not in correct order")
+            response = urlopen(MF_DICT[MF])
+            myfile = str(response.read())
+            MF_NAV.append(float(myfile.split('[')[1].split(']')[0]))
+            print("This is rerun")
     return MF_NAV
 
 if __name__ == '__main__':
