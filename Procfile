@@ -1,1 +1,1 @@
-web: gunicorn --bind 0.0.0.0:$PORT mftracker:mftracker
+web: gunicorn --bind 0.0.0.0:$PORT app:mftracker
