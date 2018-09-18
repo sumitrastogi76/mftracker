@@ -1,6 +1,5 @@
 import sqlite3
 import datetime
-import time
 from flask import Flask, request, redirect, url_for, render_template, abort, flash
 from six.moves.urllib.request import urlopen
 app = Flask(__name__)
@@ -99,8 +98,8 @@ def read_nav_from_internet():
         myfile = None
         try:
             response = urlopen(MF_DICT[MF])
-            time.sleep(1)
             myfile = str(response.read())
+            print(myfile)
             MF_NAV.append(float(myfile.split('[')[1].split(']')[0].strip()))
         except:
             print("Error during capturing NAV : "+(myfile.split('[')[1].split(']')[0]))
