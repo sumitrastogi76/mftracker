@@ -44,9 +44,9 @@ def home():
 @app.route('/update', methods = ['POST','GET'])
 def update():
     if request.method == 'POST':
-        conn = connect_db('MF.db')
-        update_value(conn,"COST",29900.07,"MTE117")
-        return "Database Updated"
+        #conn = connect_db('MF.db')
+        #update_value(conn,"COST",29900.07,"MTE117")
+        return "Database Update Feature is not available yet"
 
 @app.route('/showdb', methods = ['POST','GET'])
 def show_db():
