@@ -101,7 +101,7 @@ def read_nav_from_internet():
             myfile = str(response.read())
             MF_NAV.append(float(myfile.split('[')[1].split(']')[0].strip()))
         except:
-            print("Error during capturing NAV : "+(myfile.split('[')[1].split(']')[0])))
+            print("Error during capturing NAV : "+(myfile.split('[')[1].split(']')[0]))
     return MF_NAV
 
 if __name__ == '__main__':
