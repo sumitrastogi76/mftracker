@@ -1,25 +1,30 @@
 <!doctype html>
 <html>
    <body>
-   
-      <h1>Login</h1>
-      
-      {% if error %}
-      <p><strong>Error:</strong> {{ error }}
-      {% endif %}
-      
+         <center>
       <form action = "/login" method = post>
-         <dl>
-            <dt>Username:</dt>
-            <dd>
-               <input type = text name = username 
-                  value = "{{request.form.username }}">
-            </dd>
-            <dt>Password:</dt>
-            <dd><input type = password name = password></dd>
-         </dl>
-         <p><input type = submit value = Login></p>
+            <table style="width: 500px;"><tr><td align="center" valign="top">
+            <tr><h3>Login Page</h3></tr>
+            <tr>
+                  <td>Username:</td>
+                  <td><input type = text name = username></td>
+            </tr>
+            <tr>
+                  <td>Password</td>
+                  <td><input type = password name = password></td>
+            </tr>
+            <tr>
+                  <td>
+                  {% if error %}
+                  <P><strong>Error:</strong> {{ error }}
+                  {% endif %}
+                  </td>
+                  <td>
+                  <input type = "image" value = "Login" src="static\images\login.png" width="100" height="30" alt="Login"> 
+                  </td>
+            </tr>
+            </table>
       </form>
-      
+      </center>
    </body>
 </html>

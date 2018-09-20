@@ -7,18 +7,27 @@ app = Flask(__name__)
 app.secret_key = 'random string'
 
 def connect_db(db_name):
-    conn = sqlite3.connect(db_name)
-    print("database open")
-    return conn
+    try:
+        conn = sqlite3.connect(db_name)
+        print("database open")
+        return conn
+    except:
+        flash("ERROR : database open")
 
 def update_value(conn,row,value,key):
-    conn.execute("UPDATE MF_table set %s = %f where MF_ID = '%s';"%(row,value,key))
-    conn.commit()
-    print("Record Updated Successfully")
+    try:
+        conn.execute("UPDATE MF_table set %s = %f where MF_ID = '%s';"%(row,value,key))
+        conn.commit()
+        print("Record Updated Successfully")
+    except:
+        flash("ERROR : Record Not Updated")
 
 def read_value(conn,table_name):
-    cursor = conn.execute("SELECT * from %s"%table_name)
-    return cursor
+    try:
+        cursor = conn.execute("SELECT * from %s"%table_name)
+        return cursor
+    except:
+        flash("ERROR : DB Cursor not created")
 
 @app.route('/login',methods = ['POST', 'GET'])
 def login():
@@ -45,12 +54,25 @@ def home():
 def update():
     if request.method == 'POST':
         conn = connect_db('MF.db')
-        update_value(conn,"COST",29900.07,"MTE117")
-        return "Database Update Feature is not available yet"
+        update_value(conn,"UNIT",float(request.form['1MSB079']),"MSB079")
+        update_value(conn,"COST",float(request.form['2MSB079']),"MSB079")
+        update_value(conn,"UNIT",float(request.form['1MBS291']),"MBS291")
+        update_value(conn,"COST",float(request.form['2MBS291']),"MBS291")
+        update_value(conn,"UNIT",float(request.form['1MTE117']),"MTE117")
+        update_value(conn,"COST",float(request.form['2MTE117']),"MTE117")
+        update_value(conn,"UNIT",float(request.form['1MKP002']),"MKP002")
+        update_value(conn,"COST",float(request.form['2MKP002']),"MKP002")
+        update_value(conn,"UNIT",float(request.form['1MPI1116']),"MPI1116")
+        update_value(conn,"COST",float(request.form['2MPI1116']),"MPI1116")
+        update_value(conn,"UNIT",float(request.form['1MKM311']),"MKM311")
+        update_value(conn,"COST",float(request.form['2MKM311']),"MKM311")
+        update_value(conn,"UNIT",float(request.form['1MMA100']),"MMA100")
+        update_value(conn,"COST",float(request.form['2MMA100']),"MMA100")
+        flash('Database Updated Successfully')
+        return redirect(url_for('home'))
 
 @app.route('/showdb', methods = ['POST','GET'])
 def show_db():
-    save_nav_in_db(read_nav_from_internet())
     conn = connect_db('MF.db')
     return render_template('update.html', cursor = read_value(conn,'MF_table'))
 
@@ -72,15 +94,19 @@ def report():
         unit.append(mf_data[index][2])
         value.append(mf_data[index][2]*NAV[index+1])
         cost.append(mf_data[index][3])
+    data.append(["MUTUAL FUND NAME","NAV","UNITs","COST","VALUE","PROFIT/LOSS"])
     for i in range(len(name)):
-        data.append([name[i],NAV[i+1],unit[i],cost[i],value[i],value[i]-cost[i]])
-    data.append(['Profit/Loss',str((sum(value)-sum(cost))*100/sum(cost))+"%",'',sum(cost),sum(value),sum(value)-sum(cost)])
+        if NAV[i+1] == 0:
+            data.append([name[i],"ERROR",unit[i],round(cost[i],2),0,0])
+        else:
+            data.append([name[i],NAV[i+1],unit[i],round(cost[i],2),round(value[i],2),round(value[i]-cost[i],2)])
+    data.append(['TOTAL','','',round(sum(cost),2),round(sum(value),2),round(sum(value)-sum(cost),2)])
+    data.append(round((sum(value)-sum(cost))*100/sum(cost),2))
     return render_template('report.html',mf_data=data)
 
 def save_nav_in_db(NAV):
     conn = connect_db('MF.db')
     conn.execute("INSERT INTO MF_RECORD (DATE, MF1, MF2, MF3, MF4, MF5, MF6, MF7) VALUES(?,?,?,?,?,?,?,?)",tuple(NAV))
-    print("Record Saved")
     conn.commit()
     conn.close()
 
@@ -103,7 +129,7 @@ def read_nav_from_internet():
             tmp = (myfile.split('[')[1].split(']')[0].strip())
             MF_NAV.append(float(myfile.split('[')[1].split(']')[0].strip()))
         except:
-            print("Error during capturing NAV -->"+tmp+"<--")
+            print("Error during capturing NAV of %s-->"%MF_DICT[MF][46:-7]+tmp+"<--")
             MF_NAV.append(0)
     return MF_NAV
 

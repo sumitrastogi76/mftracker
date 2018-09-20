@@ -1,21 +1,42 @@
 <!doctype html>
 <html>
    <body>
+    <center>
     <form action = "/report" method = "POST">
         <br>
+        {% set profit = mf_data.pop() %}
+        <h1>
+            {% if profit|float < 0.0 %}<font color="red"><b> {{ profit }}% &#x21E9; </b></font><p><img src="static/images/loss.png" width="100" height="100"/></p>
+            {% else %}<font color="green"><b>{{ profit }}% &#x21E7;</b></font><p><img src="static/images/profit.png" width="100" height="100"/></p>
+            {% endif %}
+            </h1>
         <table border = 5>
             {% for row in mf_data%}
                <tr>
                   <th> {{ row[0] }} </th>
                   <td> {{ row[1] }} </td>
                   <td> {{ row[2] }} </td>
-                  <td> {{ row[3] }} </td>
-                  <td> {{ row[4] }} </td>
-                  <td> {{ row[5] }} </td>
+                    <td> 
+                        {% if row[3] == "COST" %}{{ row[3] }}
+                        {% else %} &#x20a8; {{ row[3] }}
+                        {% endif %} 
+                    </td>
+                    <td> 
+                        {% if row[4] == "VALUE" %}{{ row[4] }}
+                        {% else %} &#x20a8; {{ row[4] }}
+                        {% endif %} 
+                    </td>
+                  <td>
+                        {% if row[5] == "PROFIT/LOSS" %}{{ row[5] }}
+                        {% elif row[5]|float < 0.0 %}<font color="red"><b>&#x20a8; {{ row[5] }}</b></font>
+                        {% else %}<font color="green"><b>&#x20a8; {{ row[5] }}</b></font>
+                        {% endif %}
+                  </td>
                </tr>
             {% endfor %}
         </table>
      </table>
-     <p><a href = "{{ url_for('home') }}"><b>BACK</b></a>
+     <p><a href = "{{ url_for('home') }}"><b><img src="static/images/back.png"/></b></a>
+     </center>
    </body>
 </html>
