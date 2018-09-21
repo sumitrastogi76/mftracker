@@ -1,7 +1,6 @@
 import sqlite3
 import datetime
 import time
-import os
 from flask import Flask, request, redirect, url_for, render_template, abort, flash, session
 from six.moves.urllib.request import urlopen
 app = Flask(__name__)
@@ -147,5 +146,5 @@ def read_nav_from_internet():
     return MF_NAV
 
 if __name__ == '__main__':
-    app.secret_key = os.urandom(12)
+    app.secret_key = "r47yfauefyew8h9f83wht94yrtf9"
     app.run(debug = False)
