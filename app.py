@@ -4,6 +4,7 @@ import time
 from flask import Flask, request, redirect, url_for, render_template, abort, flash, session
 from six.moves.urllib.request import urlopen
 app = Flask(__name__)
+app.secret_key = "r47yfauefyew8h9f83wht94yrtf9"
 
 def connect_db(db_name):
     try:
@@ -146,5 +147,4 @@ def read_nav_from_internet():
     return MF_NAV
 
 if __name__ == '__main__':
-    app.secret_key = "r47yfauefyew8h9f83wht94yrtf9"
     app.run(debug = False)
