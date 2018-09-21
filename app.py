@@ -1,15 +1,15 @@
 import sqlite3
 import datetime
 import time
-from flask import Flask, request, redirect, url_for, render_template, abort, flash
+import os
+from flask import Flask, request, redirect, url_for, render_template, abort, flash, session
 from six.moves.urllib.request import urlopen
 app = Flask(__name__)
-app.secret_key = 'random string'
 
 def connect_db(db_name):
     try:
         conn = sqlite3.connect(db_name)
-        print("database open")
+        #print("database open")
         return conn
     except:
         flash("ERROR : database open")
@@ -18,7 +18,7 @@ def update_value(conn,row,value,key):
     try:
         conn.execute("UPDATE MF_table set %s = %f where MF_ID = '%s';"%(row,value,key))
         conn.commit()
-        print("Record Updated Successfully")
+        #print("Record Updated Successfully")
     except:
         flash("ERROR : Record Not Updated")
 
@@ -36,8 +36,9 @@ def login():
       username = request.form['username']
       pswd = request.form['password']
       error = 'Invalid username or password. Please try again!'
-      if pswd == "qwe123R$" and username == 'sumit7150':
-          flash('Welcome %s, You were successfully logged in'%username)
+      if pswd == "qwe123R$" and username == 'admin':
+          #flash('Welcome %s, You were successfully logged in'%username)
+          session['logged_in'] = True
           return redirect(url_for('home'))
       else:
           return render_template('login.html',error = error)
@@ -46,28 +47,39 @@ def login():
 def index():
    return render_template('login.html')
 
+@app.route('/logout')
+def logout():
+    session['logged_in']=False
+    return render_template('login.html')
+
 @app.route('/home')
 def home():
-   return render_template('home.html')
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        return render_template('home.html')
 
 @app.route('/update', methods = ['POST','GET'])
 def update():
-    if request.method == 'POST':
-        conn = connect_db('MF.db')
-        update_value(conn,"UNIT",float(request.form['1MSB079']),"MSB079")
-        update_value(conn,"COST",float(request.form['2MSB079']),"MSB079")
-        update_value(conn,"UNIT",float(request.form['1MBS291']),"MBS291")
-        update_value(conn,"COST",float(request.form['2MBS291']),"MBS291")
-        update_value(conn,"UNIT",float(request.form['1MTE117']),"MTE117")
-        update_value(conn,"COST",float(request.form['2MTE117']),"MTE117")
-        update_value(conn,"UNIT",float(request.form['1MKP002']),"MKP002")
-        update_value(conn,"COST",float(request.form['2MKP002']),"MKP002")
-        update_value(conn,"UNIT",float(request.form['1MPI1116']),"MPI1116")
-        update_value(conn,"COST",float(request.form['2MPI1116']),"MPI1116")
-        update_value(conn,"UNIT",float(request.form['1MKM311']),"MKM311")
-        update_value(conn,"COST",float(request.form['2MKM311']),"MKM311")
-        update_value(conn,"UNIT",float(request.form['1MMA100']),"MMA100")
-        update_value(conn,"COST",float(request.form['2MMA100']),"MMA100")
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        if request.method == 'POST':
+            conn = connect_db('MF.db')
+            update_value(conn,"UNIT",float(request.form['1MSB079']),"MSB079")
+            update_value(conn,"COST",float(request.form['2MSB079']),"MSB079")
+            update_value(conn,"UNIT",float(request.form['1MBS291']),"MBS291")
+            update_value(conn,"COST",float(request.form['2MBS291']),"MBS291")
+            update_value(conn,"UNIT",float(request.form['1MTE117']),"MTE117")
+            update_value(conn,"COST",float(request.form['2MTE117']),"MTE117")
+            update_value(conn,"UNIT",float(request.form['1MKP002']),"MKP002")
+            update_value(conn,"COST",float(request.form['2MKP002']),"MKP002")
+            update_value(conn,"UNIT",float(request.form['1MPI1116']),"MPI1116")
+            update_value(conn,"COST",float(request.form['2MPI1116']),"MPI1116")
+            update_value(conn,"UNIT",float(request.form['1MKM311']),"MKM311")
+            update_value(conn,"COST",float(request.form['2MKM311']),"MKM311")
+            update_value(conn,"UNIT",float(request.form['1MMA100']),"MMA100")
+            update_value(conn,"COST",float(request.form['2MMA100']),"MMA100")
         flash('Database Updated Successfully')
         return redirect(url_for('home'))
 
@@ -78,31 +90,32 @@ def show_db():
 
 @app.route('/report', methods = ['POST','GET'])
 def report():
-    NAV = read_nav_from_internet()
-    print(NAV)
-    #save_nav_in_db(NAV)
-    conn = connect_db('MF.db')
-    value = []
-    cost = []
-    name = []
-    unit = []
-    data = []
-    cursor_mf_table = read_value(conn,'MF_table')
-    mf_data = cursor_mf_table.fetchall()
-    for index in range(len(mf_data)):
-        name.append(mf_data[index][0])
-        unit.append(mf_data[index][2])
-        value.append(mf_data[index][2]*NAV[index+1])
-        cost.append(mf_data[index][3])
-    data.append(["MUTUAL FUND NAME","NAV","UNITs","COST","VALUE","PROFIT/LOSS"])
-    for i in range(len(name)):
-        if NAV[i+1] == 0:
-            data.append([name[i],"ERROR",unit[i],round(cost[i],2),0,0])
-        else:
-            data.append([name[i],NAV[i+1],unit[i],round(cost[i],2),round(value[i],2),round(value[i]-cost[i],2)])
-    data.append(['TOTAL','','',round(sum(cost),2),round(sum(value),2),round(sum(value)-sum(cost),2)])
-    data.append(round((sum(value)-sum(cost))*100/sum(cost),2))
-    return render_template('report.html',mf_data=data)
+    if not session.get('logged_in'):
+        return render_template('login.html')
+    else:
+        NAV = read_nav_from_internet()
+        #save_nav_in_db(NAV)
+        conn = connect_db('MF.db')
+        value = []
+        cost = []
+        name = []
+        unit = []
+        data = []
+        cursor_mf_table = read_value(conn,'MF_table')
+        mf_data = cursor_mf_table.fetchall()
+        for index in range(len(mf_data)):
+            name.append(mf_data[index][0])
+            unit.append(mf_data[index][2])
+            value.append(mf_data[index][2]*NAV[index+1])
+            cost.append(mf_data[index][3])
+        for i in range(len(name)):
+            if NAV[i+1] == 0:
+                data.append([name[i],"ERROR",unit[i],round(cost[i],2),0,0])
+            else:
+                data.append([name[i].upper(),NAV[i+1],unit[i],round(cost[i],2),round(value[i],2),round(value[i]-cost[i],2)])
+        data.append(['','','TOTAL',round(sum(cost),2),round(sum(value),2),round(sum(value)-sum(cost),2)])
+        data.append(round((sum(value)-sum(cost))*100/sum(cost),2))
+        return render_template('report.html',mf_data=data)
 
 def save_nav_in_db(NAV):
     conn = connect_db('MF.db')
@@ -129,9 +142,10 @@ def read_nav_from_internet():
             tmp = (myfile.split('[')[1].split(']')[0].strip())
             MF_NAV.append(float(myfile.split('[')[1].split(']')[0].strip()))
         except:
-            print("Error during capturing NAV of %s-->"%MF_DICT[MF][46:-7]+tmp+"<--")
+            flash("Error during capturing NAV of %s-->"%MF_DICT[MF][46:-7]+tmp+"<--")
             MF_NAV.append(0)
     return MF_NAV
 
 if __name__ == '__main__':
+    app.secret_key = os.urandom(12)
     app.run(debug = False)

@@ -2,30 +2,34 @@
 <html>
    <body>
        <center>
-        <h3>Update Your UNIT Purchase and Total Cost</h3>
+            <h3>Update Your UNIT Purchase and Total Cost</h3>
     <form action = "/update" method = "POST">
         <br>
+        <tbody align="left">
         <table border = 5>
+            <thead>
                 <tr>
-                    <td>
+                    <th>
                         MUTUAL FUND NAME
-                    </td>
-                    <td>
+                    </th>
+                    <th>
                         UNIT PURCHASED
-                    </td>
-                    <td>
+                    </th>
+                    <th>
                         INVESTED COST
-                    </td>
+                    </th>
                 </tr>
+            </thead>
             {% for row in cursor%}
                <tr>
-                  <th> {{ row[0] }} </th>
+                  <th align="left"> {{ row[0] }} </th>
                   <td> <input type = "text" name = "1{{ row[1] }}" value = "{{ row[2] }}" /> </td>
                   <td> <input type = "text" name = "2{{ row[1] }}" value = "{{ row[3] }}" /> </td>
                </tr>
             {% endfor %}
         </table>
      </table>
+    </tbody>
      <p><a href = "{{ url_for('home') }}"><b><img src="static/images/back.png" alt="Go Back"/></b></a><input type = "image" value = "Update" src="static/images/update.png" alt="Update"/></p>
     </center>
    </body>

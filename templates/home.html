@@ -1,11 +1,14 @@
 <!doctype html>
+<link rel="stylesheet" href="/static/css/general.css" type="text/css">
 <html>
    <head>
       <title>Welcome to sumit website</title>
    </head>
    <body>
       <center>
-      <h1>Welcome to Sumit's Mutual Fund Tracker</h1>
+            <div class="app-title">
+                  <h1>Welcome to Sumit's Mutual Fund Tracker</h1>
+            </div>
       {% with messages = get_flashed_messages() %}
          {% if messages %}
             <ul>
@@ -19,7 +22,7 @@
       <p><a href = "{{ url_for('report') }}"><img src="static/images/report.png"/></a>
          <a href = "{{ url_for('show_db') }}"><img src="static/images/update.png"/></a>
       </p>
-      <p><a href = "{{ url_for('index') }}"><img src="static/images/logout.png"/></a></p>
+      <p><a href = "{{ url_for('logout') }}"><img src="static/images/logout.png"/></a></p>
       </center>
       </body>
 </html>
